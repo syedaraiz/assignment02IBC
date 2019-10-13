@@ -7,29 +7,32 @@ import (
 
 //Block Of Entire Blockchain
 type Block struct {
-	transaction string
-	prevHash    []byte
-	prevPointer *Block
+	Transaction string
+	PrevHash    []byte
+	PrevPointer *Block
 }
 
 func calculateHash(data Block) []byte {
-	byteTransaction := []byte(data.transaction)
-	appendedTransaction := append(data.prevHash, byteTransaction...)
+	byteTransaction := []byte(data.Transaction)
+	appendedTransaction := append(data.PrevHash, byteTransaction...)
 	hashedValue := sha256.Sum256(appendedTransaction)
 	return hashedValue[:]
 }
-
+//CalculateHash ...
+func CalculateHash(data *Block) []byte {
+	return calculateHash(*data)
+}
 //InsertBlock inserts at end of Blockchain
-func InsertBlock(transaction string, chainHead *Block) *Block {
+func InsertBlock(Transaction string, chainHead *Block) *Block {
 	var toBeInsertedBlock Block
-	toBeInsertedBlock.transaction = transaction
+	toBeInsertedBlock.Transaction = Transaction
 	if chainHead == nil {
-		toBeInsertedBlock.prevHash = []byte{}
-		toBeInsertedBlock.prevPointer = nil
+		toBeInsertedBlock.PrevHash = []byte{}
+		toBeInsertedBlock.PrevPointer = nil
 	}
-	toBeInsertedBlock.prevPointer = chainHead
+	toBeInsertedBlock.PrevPointer = chainHead
 	if chainHead != nil {
-		toBeInsertedBlock.prevHash = calculateHash(*chainHead)
+		toBeInsertedBlock.PrevHash = calculateHash(*chainHead)
 	}
 	return &toBeInsertedBlock
 }
@@ -39,9 +42,9 @@ func ListBlocks(chainHead *Block) {
 	if chainHead == nil {
 		fmt.Println("Blockchain is empty.")
 	}
-	for currentBlock := chainHead; currentBlock != nil; currentBlock = currentBlock.prevPointer {
-		fmt.Print(currentBlock.transaction)
-		if currentBlock.prevPointer != nil {
+	for currentBlock := chainHead; currentBlock != nil; currentBlock = currentBlock.PrevPointer {
+		fmt.Print(currentBlock.Transaction)
+		if currentBlock.PrevPointer != nil {
 			fmt.Print("<-")
 		}
 	}
@@ -53,9 +56,9 @@ func ChangeBlock(oldTrans string, newTrans string, chainHead *Block) {
 	if chainHead == nil {
 		fmt.Println("Blockchain is empty.")
 	}
-	for currentBlock := chainHead; currentBlock.prevPointer != nil; currentBlock = currentBlock.prevPointer {
-		if currentBlock.transaction == oldTrans {
-			currentBlock.transaction = newTrans
+	for currentBlock := chainHead; currentBlock.PrevPointer != nil; currentBlock = currentBlock.PrevPointer {
+		if currentBlock.Transaction == oldTrans {
+			currentBlock.Transaction = newTrans
 			return
 		}
 	}
@@ -66,8 +69,8 @@ func VerifyChain(chainHead *Block) bool {
 	if chainHead == nil {
 		fmt.Println("Blockchain is empty.")
 	}
-	for currentBlock := chainHead; currentBlock.prevPointer != nil; currentBlock = currentBlock.prevPointer {
-		if bytes.Compare(calculateHash(*(currentBlock.prevPointer)), currentBlock.prevHash) != 0 {
+	for currentBlock := chainHead; currentBlock.PrevPointer != nil; currentBlock = currentBlock.PrevPointer {
+		if bytes.Compare(calculateHash(*(currentBlock.PrevPointer)), currentBlock.PrevHash) != 0 {
 			fmt.Println("Blockchain is altered with.")
 			return false
 		}
