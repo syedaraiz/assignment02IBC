@@ -1,5 +1,5 @@
 package structures
-
+import blockchain "github.com/syedaraiz/assignment02IBC/Blockchain"
 //Client is basically every user in blockchain
 type Client struct {
 	Name           string
@@ -8,6 +8,7 @@ type Client struct {
 	ListeningPort  string
 	ConnectedPeers []Client
 	AccountBalance int
+	ChainHead *blockchain.Block
 }
 
 //Transaction is basically every user to other
