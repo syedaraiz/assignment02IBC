@@ -1,3 +1,4 @@
+package satoshi
 import (
 	"encoding/gob"
 	//For Printing On Console
